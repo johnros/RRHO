@@ -1,33 +1,38 @@
 # Suggest default step size
 defaultftepSize <-function(list1, list2){
-	n1<- length(list1)
-	n2<- length(list2)
+	n1<- dim(list1)[1]
+	n2<- dim(list2)[1]
 	result <- ceiling(min(sqrt(c(n1,n2))))	
 	return(result)
 }	
-
+## Testing:
+# list.length <- 100
+# list.names <- paste('Gene',1:list.length, sep='')
+# gene.list1<- data.frame(list.names, sample(100))
+# gene.list2<- data.frame(list.names, sample(100))
+# defaultftepSize(gene.list1, gene.list2)
 
 
 # Compute the overlaps between two *numeric* lists:
 numericListOverlap<- function(sample1, sample2, stepsize){
   n<- length(sample1)
   overlap<- function(a,b) {
-    f<- function(a,b) {
-      count<- as.integer(sum(as.numeric(head(sample1,n=a) %in% head(sample2,n=b))))
-      log.pval<- phyper(q=count, m=a, n=n-a, k=b, lower.tail=FALSE, log.p=TRUE)
-      return(list(count=count, log.pval=log.pval))
-    }
-    return( mapply(f, a, b) )
-  }    
-  ## TODO: outer to return a list
-  result<- outer(seq(1,n,by=stepsize), seq(1,n,by=stepsize), overlap)  
-  return(result)  
+    count<-as.integer(sum(as.numeric(sample1[1:a] %in% sample2[1:b])))
+    log.pval<- phyper(q=count-1, m=a, n=n-a, k=b, lower.tail=FALSE, log.p=TRUE)
+    return(c(counts=count, log.pval=log.pval))    
+  }
+      
+  indexes<- expand.grid(i=seq(1,n,by=stepsize), j=seq(1,n,by=stepsize))
+  overlaps<- apply(indexes, 1, function(x) overlap(x['i'],x['j']))
+  .data<- cbind(indexes, t(overlaps))  
+  return(.data)  
 }
 ## Testing:
-n<- 112
-sample1<- sample(n)
-sample2<- sample(n)  
-numericListOverlap(sample1, sample2, 10)
+# n<- 112
+# sample1<- sample(n)
+# sample2<- sample(n)  
+# .test<- numericListOverlap(sample1, sample2, 10)
+# table(is.na(.test$log.pval))
 
 
 
@@ -47,7 +52,7 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     if (length(list2[,1])!=length(unique(list2[,1])))
 	    stop('Non-unique gene identifier found in list2');
     
-    result <-list(hypermat=NA, hypermat.count=NA, n.items=nrow(list1), stepsize=stepsize, hypermat.by=NA) 
+    result <-list(hypermat=NA, hypermat.counts=NA, n.items=nrow(list1), stepsize=stepsize, hypermat.by=NA, call=match.call()) 
 
     # Order lists along list2
     list1 = list1[order(list1[,2],decreasing=TRUE),];
@@ -58,7 +63,7 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     ## Number of genes on the array
     N = max(nlist1,nlist2);
   
-	.hypermat<- numericListOverlap(list1[,1], list2[,1], stepsize)
+  .hypermat<- numericListOverlap(list1[,1], list2[,1], stepsize)
    
     hypermat = matrix(data=NA,nrow=length(seq(1,nlist1,stepsize)),ncol=length(seq(1,nlist2,stepsize)));
     hypermat.counts = matrix(data=NA,nrow=length(seq(1,nlist1,stepsize)),ncol=length(seq(1,nlist2,stepsize)));
@@ -81,11 +86,9 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
         }
         county=0;
     }
-    result$hypermat <- hypermat
-    result$hypermat.counts <- hypermat.counts
-
-  browser()
-  
+    result$hypermat <- (-1) * .hypermat$log.pval
+    result$hypermat.counts <- .hypermat$counts
+	
     ## Convert hypermat to a vector and Benjamini Yekutieli FDR correct
     if(BY){
 	    hypermatvec = matrix(hypermat,nrow=nrow(hypermat)*ncol(hypermat),ncol=1);
@@ -172,11 +175,11 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     return(result);
 }
 # Testing:
- list.length <- 100
- list.names <- paste('Gene',1:list.length, sep='')
- gene.list1<- data.frame(list.names, sample(100))
- gene.list2<- data.frame(list.names, sample(100))
- RRHO.example <-  RRHO(gene.list1, gene.list2)
+list.length <- 1000
+list.names <- paste('Gene',1:list.length, sep='')
+gene.list1<- data.frame(list.names, sample(100))
+gene.list2<- data.frame(list.names, sample(100))
+RRHO.example <-  RRHO(gene.list1, gene.list2)
 
 
 
