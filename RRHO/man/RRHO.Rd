@@ -53,15 +53,16 @@ Benjamini, Y., and D. Yekutieli. 2001. "The Control of the False Discovery Rate 
 \author{
 	Jason Stein and Jonathan Rosenblatt
 }
-% \note{
-%%  ~~further notes~~
-%}
+
+\note{
+Unlike the reference, we output the pvalues in natural log scale and not in log 10 scale. 
+
+}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-% \seealso{
-% ~~objects to See Also as \code{\link{help}}, ~~~
-% }
+\seealso{\code{\link{pvalRRHO}}}
+
 \examples{
 	list.length <- 100
 	list.names <- paste('Gene',1:list.length, sep='')
