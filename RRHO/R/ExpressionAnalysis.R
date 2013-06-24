@@ -18,20 +18,28 @@ numericListOverlap<- function(sample1, sample2, stepsize){
   n<- length(sample1)
   overlap<- function(a,b) {
     count<-as.integer(sum(as.numeric(sample1[1:a] %in% sample2[1:b])))
-    log.pval<- phyper(q=count-1, m=a, n=n-a, k=b, lower.tail=FALSE, log.p=TRUE)
+    log.pval<- -phyper(q=count-1, m=a, n=n-a, k=b, lower.tail=FALSE, log.p=TRUE)
     return(c(counts=count, log.pval=log.pval))    
   }
-      
+  
   indexes<- expand.grid(i=seq(1,n,by=stepsize), j=seq(1,n,by=stepsize))
   overlaps<- apply(indexes, 1, function(x) overlap(x['i'],x['j']))
-  .data<- cbind(indexes, t(overlaps))  
-  return(.data)  
+  
+  nrows<- sqrt(ncol(overlaps))
+  matrix.counts<- matrix(overlaps['counts',], ncol=nrows)  
+  matrix.log.pvals<- matrix(overlaps['log.pval',], ncol=nrows)  
+  
+return(list(counts=matrix.counts, log.pval=matrix.log.pvals))  
 }
 ## Testing:
 # n<- 112
 # sample1<- sample(n)
 # sample2<- sample(n)  
 # .test<- numericListOverlap(sample1, sample2, 10)
+# dim(.test$log.oval)
+# library(lattice)
+# levelplot(.test$counts)
+# levelplot(.test$log.pval)
 # table(is.na(.test$log.pval))
 
 
@@ -46,12 +54,13 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     ## list 1 is a data.frame from experiment 1 with two columns, column 1 is the Gene Identifier, column 2 is the signed ranking value (e.g. signed -log10(p-value) or fold change)
     ## list 2 is a data.frame from experiment 2 with two columns, column 1 is the Gene Identifier, column 2 is the signed ranking value (e.g. signed -log10(p-value) or fold change)
     ## stepsize indicates how many genes to increase by in each algorithm iteration
-
-	if (length(list1[,1])!=length(unique(list1[,1])))
+  
+  if (length(list1[,1])!=length(unique(list1[,1])))
 		stop('Non-unique gene identifier found in list1');
     if (length(list2[,1])!=length(unique(list2[,1])))
 	    stop('Non-unique gene identifier found in list2');
-    
+  if(plots && (missing(outputdir) || missing(labels))) stop('When plots=TRUE, outputdir and labels are required.')
+  
     result <-list(hypermat=NA, hypermat.counts=NA, n.items=nrow(list1), stepsize=stepsize, hypermat.by=NA, call=match.call()) 
 
     # Order lists along list2
@@ -64,8 +73,11 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     N = max(nlist1,nlist2);
   
   .hypermat<- numericListOverlap(list1[,1], list2[,1], stepsize)
-    result$hypermat <- (-1) * .hypermat$log.pval
-    result$hypermat.counts <- .hypermat$counts
+  
+  ## TODO: Reconstruct matrix from vector:
+  
+  result$hypermat <- hypermat<- .hypermat$log.pval
+  result$hypermat.counts <- .hypermat$counts
 	
     ## Convert hypermat to a vector and Benjamini Yekutieli FDR correct
     if(BY){
@@ -78,7 +90,6 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     if (plots) {
 	    require(VennDiagram);
 	    require(grid)
-	    if(missing(outputdir)) stop('When plots=TRUE, outputdir required.')
         ## Function to plot color bar
         ## Modified from http://www.colbyimaging.com/wiki/statistics/color-bars
         color.bar <- function(lut, min, max=-min, nticks=11, ticks=seq(min, max, len=nticks), title='') {
@@ -153,13 +164,14 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     return(result);
 }
 # Testing:
-# list.length <- 1000
+# list.length <- 100
 # list.names <- paste('Gene',1:list.length, sep='')
 # gene.list1<- data.frame(list.names, sample(list.length))
 # gene.list2<- data.frame(list.names, sample(list.length))
 # RRHO.example <-  RRHO(gene.list1, gene.list2)
-
-
+# library(lattice)
+# levelplot(RRHO.example$hypermat)
+# RRHO.example <-  RRHO(gene.list1, gene.list2, plots=TRUE, outputdir='/tmp/', labels=c("a","b"))
 
 
 

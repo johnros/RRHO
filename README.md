@@ -8,7 +8,7 @@ Installation
 -------------
 ```{r}
 library(devtools)  
-install_github("RRHO", "johnros")
+install_github("RRHO", "johnros", subdir='RRHO')
 ```
 
 
