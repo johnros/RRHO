@@ -1,1 +1,2 @@
 export(RRHO)
+export(pvalRRHO)
