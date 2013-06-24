@@ -12,15 +12,19 @@ defaultftepSize <-function(list1, list2){
 numericListOverlap<- function(sample1, sample2, stepsize){
   n<- length(sample1)
   overlap<- function(a,b) {
-    f<- function(a,b) as.integer(sum(as.numeric(head(sample1,n=a) %in% head(sample2,n=b))))
+    f<- function(a,b) {
+      count<- as.integer(sum(as.numeric(head(sample1,n=a) %in% head(sample2,n=b))))
+      log.pval<- phyper(q=count, m=a, n=n-a, k=b, lower.tail=FALSE, log.p=TRUE)
+      return(list(count=count, log.pval=log.pval))
+    }
     return( mapply(f, a, b) )
   }    
+  ## TODO: outer to return a list
   result<- outer(seq(1,n,by=stepsize), seq(1,n,by=stepsize), overlap)  
-  return(result)
-  
+  return(result)  
 }
 ## Testing:
-n<- 100
+n<- 112
 sample1<- sample(n)
 sample2<- sample(n)  
 numericListOverlap(sample1, sample2, 10)
@@ -54,8 +58,8 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     ## Number of genes on the array
     N = max(nlist1,nlist2);
   
-	hypermat.counts2 = numericListOverlap(list1[,2], list2[,2], stepsize)
-    
+	.hypermat<- numericListOverlap(list1[,1], list2[,1], stepsize)
+   
     hypermat = matrix(data=NA,nrow=length(seq(1,nlist1,stepsize)),ncol=length(seq(1,nlist2,stepsize)));
     hypermat.counts = matrix(data=NA,nrow=length(seq(1,nlist1,stepsize)),ncol=length(seq(1,nlist2,stepsize)));
     countx = county = 0;
@@ -81,6 +85,7 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     result$hypermat.counts <- hypermat.counts
 
   browser()
+  
     ## Convert hypermat to a vector and Benjamini Yekutieli FDR correct
     if(BY){
 	    hypermatvec = matrix(hypermat,nrow=nrow(hypermat)*ncol(hypermat),ncol=1);
