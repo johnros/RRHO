@@ -64,28 +64,6 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     N = max(nlist1,nlist2);
   
   .hypermat<- numericListOverlap(list1[,1], list2[,1], stepsize)
-   
-    hypermat = matrix(data=NA,nrow=length(seq(1,nlist1,stepsize)),ncol=length(seq(1,nlist2,stepsize)));
-    hypermat.counts = matrix(data=NA,nrow=length(seq(1,nlist1,stepsize)),ncol=length(seq(1,nlist2,stepsize)));
-    countx = county = 0;
-    ##Loop over the experiments
-    for (i in seq(1,nlist1,stepsize)) {
-        countx = countx + 1;
-        for (j in seq(1,nlist2,stepsize)) {
-            county = county + 1;
-            ## Parameters for the hypergeometric test
-            k = length(intersect(list1[1:i,1],list2[1:j,1]));
-            s = length(list1[1:i,1]);
-            M = length(list2[1:j,1]);
-            ## Hypergeometric test
-	    # note: phyper returns log in natural basis (not 10)
-	    ## TODO: Jason (a) why k-1? (b) Note log is in exp base!
-            hypermat[countx,county] = -phyper(k-1,M,N-M,s,lower.tail=FALSE,log.p=TRUE);
-            hypermat.counts[countx,county] = k
-            #print(hypermat[countx,county]);
-        }
-        county=0;
-    }
     result$hypermat <- (-1) * .hypermat$log.pval
     result$hypermat.counts <- .hypermat$counts
 	
@@ -175,11 +153,11 @@ RRHO <- function(list1, list2, stepsize=defaultftepSize(list1, list2), labels, p
     return(result);
 }
 # Testing:
-list.length <- 1000
-list.names <- paste('Gene',1:list.length, sep='')
-gene.list1<- data.frame(list.names, sample(100))
-gene.list2<- data.frame(list.names, sample(100))
-RRHO.example <-  RRHO(gene.list1, gene.list2)
+# list.length <- 1000
+# list.names <- paste('Gene',1:list.length, sep='')
+# gene.list1<- data.frame(list.names, sample(list.length))
+# gene.list2<- data.frame(list.names, sample(list.length))
+# RRHO.example <-  RRHO(gene.list1, gene.list2)
 
 
 
@@ -192,35 +170,43 @@ pvalRRHO <- function(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= ma
   # FUN<- max
   # replications<- 100
   # stepsize <- RRHO.obj$stepsize
+  # result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize)
   # Note: min(pvals) maps to max(-log(pvals))
+  
+  message('This might take a while')
+  pb <- txtProgressBar(min = 0, max = replications, style = 3)
+  
 	n.items <- RRHO.obj$n.items
-	result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize )
+	result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize , replications= replications, call=match.call())
 
-	
+	list.names <- paste('Gene',1:list.length, sep='')
 	FUN.vals<- rep(NA, replications)
 	for(i in 1:replications){
     # i<- 1
 	  # Generate rankings and compute overlap
-	  list.names <- paste('Gene',1:list.length, sep='')
 	  sample1<- data.frame(list.names, sample(n.items))
 	  sample2<- data.frame(list.names, sample(n.items))	  
 	  .RRHO<- RRHO(sample1, sample2, stepsize=stepsize, plots=FALSE, BY=FALSE)
-	  .clean.log.pvals<- na.omit(.RRHO$hypermat)
-	  FUN.vals[i]<- FUN(.clean.log.pvals)
+	  .clean.result<- na.omit(.RRHO$hypermat)
+	  FUN.vals[i]<- FUN(.clean.result)
+	  
+    setTxtProgressBar(pb, i)	  
 	}
 		
-	FUN.ecdf<- function(x)  min( ecdf(FUN.vals)(x) + 1/length(FUN.vals), 1)
-	result$CDF.log.scale<- FUN.ecdf	  
+	# Adding a conservative constant in case there were not enough replications.
+  FUN.ecdf<- function(x)  min( ecdf(FUN.vals)(x) + 1/replications, 1)
+	result$FUN.ecdf<- FUN.ecdf	  
   
   .clean.data<- na.omit(RRHO.obj$hypermat)
   FUN.observed<- FUN(.clean.data)
   
   result$pval<- 1-FUN.ecdf(FUN.observed)
-	# Return pvale
+  close(pb)
+  # Return pvale
 	return(result)
 }
 ## Testing:
-pval.testing <- pvalRRHO(RRHO.example,100) 
+# pval.testing <- pvalRRHO(RRHO.example,200) 
 
 
 
