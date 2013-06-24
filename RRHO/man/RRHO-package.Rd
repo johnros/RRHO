@@ -1,6 +1,5 @@
 \name{RRHO-package}
 \alias{RRHO-package}
-\alias{RRHO}
 \docType{package}
 \title{
 	Test overlap using the Rank-Rank Hypergeometric test
@@ -24,5 +23,5 @@ Maintainer:  Jonathan Rosenblatt <john.ros.work@gmail.com>
 }
 \keyword{htest}
 \seealso{
-	\code{\link{RRGO}}
+	\code{\link{RRHO}}
 }

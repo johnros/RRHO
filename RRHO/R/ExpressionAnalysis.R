@@ -179,7 +179,7 @@ pvalRRHO <- function(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= ma
 	n.items <- RRHO.obj$n.items
 	result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize , replications= replications, call=match.call())
 
-	list.names <- paste('Gene',1:list.length, sep='')
+	list.names <- paste('Gene',1:n.items, sep='')
 	FUN.vals<- rep(NA, replications)
 	for(i in 1:replications){
     # i<- 1

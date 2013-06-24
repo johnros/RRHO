@@ -1,6 +1,5 @@
 \name{RRHO}
 \alias{RRHO}
-\alias{pvalRRHO}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Rank-Rank Hypergeometric Overlap Test}
 
@@ -12,16 +11,16 @@ RRHO(list1, list2, stepsize = defaultftepSize(list1, list2), labels, plots = FAL
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{list1}{
-	 data.frame. First colume is the element (possibly gene) identifier, and the second is its value.
+   data.frame. First colume is the element (possibly gene) identifier, and the second is its value.
 }
   \item{list2}{
-	 data.frame. First colume is the element (possibly gene) identifier, and the second is its value.
+   data.frame. First colume is the element (possibly gene) identifier, and the second is its value.
 }
   \item{stepsize}{
 	  Controls the resolution of the test: how many items between any two overlap tests. 
 }
   \item{labels}{
-	  CCharacter vector with two elements: the labels of the two lists.
+	  Character vector with two elements: the labels of the two lists.
 }
   \item{plots}{
 	  Logical. Should output plots be returned?
@@ -29,18 +28,13 @@ RRHO(list1, list2, stepsize = defaultftepSize(list1, list2), labels, plots = FAL
   \item{outputdir}{
 	  Path name where plots ae returned.
 }
-\item{n.items}{
-	Number of items (genes) in lists.
-}
-\item{stepsize}{
-	See in arguments.
-}
+
   \item{BY}{
 	  Logical. Should Benjamini-Yekutieli FDR corrected pvalues be computed?
 }
 }
 \details{
-	Following the method in the reference, the function computes the number of overlapping elements in the first \eqn{i} and \eqn{j} elements of each list, and return the observed significance of this overlap using a hypergeometric test (see \code{\link{fisher.exact}}).
+	Following the method in the reference, the function computes the number of overlapping elements in the first \eqn{i} and \eqn{j} elements of each list, and return the observed significance of this overlap using a hypergeometric test (see \code{\link{fisher.test}}).
 	The output is returned as a list of matrices including: the overlap in the first \eqn{i,j} elements and the significance of this overlap. Optional outputs include plots of these matrices in .jpg format.
 	The reference suggests using the Benjamini-Yekutieli, which is implemented as an option. This option however defaults to FALSE, as the second author of this package feels (weak) FWER control is more appropriate than FDR. This is bacause all the p-values originate from the \emph{same hypothesis} being tested, even if using different test statistics. 
 }
@@ -52,8 +46,9 @@ RRHO(list1, list2, stepsize = defaultftepSize(list1, list2), labels, plots = FAL
 }
 
 \references{
-Plaisier, Seema B., Richard Taschereau, Justin A. Wong, and Thomas G. Graeber. “Rank–rank Hypergeometric Overlap: Identification of Statistically Significant Overlap Between Gene-expression Signatures.” Nucleic Acids Research 38, no. 17 (September 1, 2010): e169–e169. doi:10.1093/nar/gkq636.
-TODO: add Benjamini-Yekutieli
+Plaisier, Seema B., Richard Taschereau, Justin A. Wong, and Thomas G. Graeber. "Rank-rank Hypergeometric Overlap: Identification of Statistically Significant Overlap Between Gene-expression Signatures." Nucleic Acids Research 38, no. 17(September 1, 2010)
+
+Benjamini, Y., and D. Yekutieli. 2001. "The Control of the False Discovery Rate in Multiple Testing Under Dependency." ANNALS OF STATISTICS 29 (4): 1165-1188.
 }
 \author{
 	Jason Stein and Jonathan Rosenblatt
