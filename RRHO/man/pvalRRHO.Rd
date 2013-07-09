@@ -32,11 +32,13 @@ pvalRRHO(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= max)
   The distribution is computed by resampling pairs of null sequences, computing the significances of all the overlaps as done in the reference, applying the aggregating function supplied by the user, and returning the permutation based significance.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\item{pval}{The FWER corrected significance of observed aggregated pvalue.}
+\item{FUN.ecdf }{The simulated sampling distribution of the aggregated pvalues. }
+\item{FUN=FUN}{The matrix aggregation function used. typicall \code{max} for minimal p-value.}
+\item{n.items}{Length of lists.}
+\item{stepsize}{See \code{\link{RRHO}}}
+\item{replications}{The number of simulation replications.}
+\item{call}{The function call.}
 }
 
 \author{

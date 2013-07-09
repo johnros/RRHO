@@ -185,8 +185,11 @@ pvalRRHO <- function(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= ma
   # result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize)
   # Note: min(pvals) maps to max(-log(pvals))
   
-  message('This might take a while')
-  pb <- txtProgressBar(min = 0, max = replications, style = 3)
+  interactive.ind<- interactive()
+  if(interactive.ind) {
+    message('This might take a while')
+    pb <- txtProgressBar(min = 0, max = replications, style = 3)
+  }
   
 	n.items <- RRHO.obj$n.items
 	result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize , replications= replications, call=match.call())
@@ -202,7 +205,7 @@ pvalRRHO <- function(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= ma
 	  .clean.result<- na.omit(.RRHO$hypermat)
 	  FUN.vals[i]<- FUN(.clean.result)
 	  
-    setTxtProgressBar(pb, i)	  
+    if(interactive.ind) setTxtProgressBar(pb, i)	  
 	}
 		
 	# Adding a conservative constant in case there were not enough replications.
@@ -213,7 +216,8 @@ pvalRRHO <- function(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= ma
   FUN.observed<- FUN(.clean.data)
   
   result$pval<- 1-FUN.ecdf(FUN.observed)
-  close(pb)
+  
+  if(interactive.ind) close(pb)
   # Return pvale
 	return(result)
 }

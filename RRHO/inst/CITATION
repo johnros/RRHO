@@ -1,4 +1,4 @@
-     citHeader("To cite package ‘RRHO’ in publications use:")
+     citHeader("To cite package `RRHO` in publications use:")
      
      year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
      vers <- paste("R package version", meta$Version)
@@ -6,12 +6,9 @@
      citEntry(entry = "Manual",
               title = "RRHO: Test overlap using the Rank-Rank Hypergeometric test",
               author = personList(as.person("Jonathan D. Rosenblatt"),
-                                  as.person("Jason L. Stein"),                                  
+                                  as.person("Jason L. Stein")),                                  
               year = year,
               note = vers,
      
               textVersion =
-              paste0("Jonathan D. Rosenblatt and Jason L. Stein (",
-                     year,
-                     "). RRHO: Test overlap using the Rank-Rank Hypergeometric test. ",
-                     vers, "."))
+              paste0("Jonathan D. Rosenblatt and Jason L. Stein (", year,"). RRHO: Test overlap using the Rank-Rank Hypergeometric test. ", vers, "."))
