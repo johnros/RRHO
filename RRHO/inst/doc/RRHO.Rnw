@@ -30,7 +30,7 @@
 
 Consider the problem of comparing two lists of same length. In the following, we will assume these lists consist of genes.
 A possible way of comparison would be to test the hypothesis that the lists' ordering is arbitrary, versus some type of agreement.
-This is the purpose of this package, based on the work by~\citet{plaisier_rankrank_2010}.
+This is the purpose of this package, based on the work of~\citet{plaisier_rankrank_2010}.
 
 The proposed approach is to count the number of common genes in the first $i$ and $j$ elements of the first and second list respectively. 
 As the count of common elements could be driven by chance, the significance of the observed count is computed assuming the hypothesis of completely random list orderings. As this is performed for all $i$ and $j$, multiplicity kicks in.
@@ -100,16 +100,7 @@ plot(Vectorize(pval.testing$FUN.ecdf)(xs)~xs, xlab='-log(pvalue)', ylab='ECDF', 
 
 
 
-
-
-
-
-
-
 \bibliography{Project-RRHO}
 \bibliographystyle{plainnat}
-
-
-
 
 \end{document}
