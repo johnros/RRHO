@@ -1,31 +1,31 @@
 \name{pvalRRHO}
 \alias{pvalRRHO}
 \title{
-	Compute the significance of the overlap
+	Compute the significance of the overlap between two lists
 }
 \description{
- Computes the significance of the agreements between lists as treturned by \code{\link{RRHO}} using resampling.
+ Computes the significance of the agreements between lists as returned by \code{\link{RRHO}} using resampling.
 }
 \usage{
 pvalRRHO(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= max)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{RRHO.obj}{
   The output object of the \code{\link{RRHO}} function.
 }
   \item{replications}{
-  The number of samples from the distribution of the aggregating test statistic.
+  The number of samples to be taken from the distribution of the aggregated test statistic.
 }
 \item{stepsize}{
-  Controls the resolution of the test: how many items between any two overlap tests. 
+  Controls the resolution of the test: how many items between any two overlap tests (i.e., netween any two $i$s and two $j$s.)
 }
   \item{FUN}{
-  The statistic aggregating the infomation from the whole overlap matrix. Typically the \eqn{min} pvalue, or \eqn{max} on \eqn{-log(pval)} scale.
+  The function aggregating infomation from the whole overlap matrix into one summary statistic. Typically the \eqn{min} pvalue, or \eqn{max} on \eqn{-log(pval)} scale.
 }
 }
 \details{
-  The distribution of some user supplied function of the RRHO pvalues is computed using simulation. 
+  The distribution of \eqn{FUN(-log(pval))} is computed using resampling. 
   
   The aggregating function will typically be the \code{max} function, corresponding to the maximal \code{-log(pvalue)}, i.e., the most significant agreement over all sublists. 
   
@@ -33,8 +33,8 @@ pvalRRHO(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= max)
 }
 \value{
 \item{pval}{The FWER corrected significance of observed aggregated pvalue.}
-\item{FUN.ecdf }{The simulated sampling distribution of the aggregated pvalues. }
-\item{FUN=FUN}{The matrix aggregation function used. typicall \code{max} for minimal p-value.}
+\item{FUN.ecdf}{The simulated sampling distribution of the aggregated pvalues. }
+\item{FUN}{The matrix aggregation function used. typicall \code{max} for minimal p-value.}
 \item{n.items}{Length of lists.}
 \item{stepsize}{See \code{\link{RRHO}}}
 \item{replications}{The number of simulation replications.}
@@ -45,9 +45,9 @@ pvalRRHO(RRHO.obj, replications, stepsize=RRHO.obj$stepsize, FUN= max)
 Jonathan Rosenblatt
 }
 \note{
-Might take a long time to run. Depending on the number of replications, the item (gene) count and the \code{stepsize}.
+Might take a long time to run. Depending on the number of \code{replications}, the item (gene) count and the \code{stepsize}.
 
-Also note that the significance returned is a conservative value (by a constant of 1/\code{replications}). The conservativeness vanishes are more replication are performed. 
+Also note that the significance returned is a conservative value (by a constant of 1/\code{replications}). 
 }
 
 \seealso{

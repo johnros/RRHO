@@ -35,12 +35,10 @@ RRHO(list1, list2, stepsize = defaultftepSize(list1, list2), labels, plots = FAL
 }
 \details{
 	Following the method in the reference, the function computes the number of overlapping elements in the first \eqn{i} and \eqn{j} elements of each list, and return the observed significance of this overlap using a hypergeometric test (see \code{\link{fisher.test}}).
-	The output is returned as a list of matrices including: the overlap in the first \eqn{i,j} elements and the significance of this overlap. Optional outputs include plots of these matrices in .jpg format.
-	The reference suggests using the Benjamini-Yekutieli, which is implemented as an option. This option however defaults to FALSE, as the second author of this package feels (weak) FWER control is more appropriate than FDR. This is bacause all the p-values originate from the \emph{same hypothesis} being tested, even if using different test statistics. 
-}
+	The output is returned as a list of matrices including: the overlap in the first \eqn{i,j} elements and the significance of this overlap. Optional outputs include plots of these matrices in .jpg format.}
 
 \value{
-\item{hypermat}{Matrix of \eqn{-log(pvals} of the test for the first \eqn{i,j} elements of the lists.}
+\item{hypermat}{Matrix of \eqn{-log(pvals)} of the test for the first \eqn{i,j} elements of the lists.}
 \item{hypermat.counts}{Counts of the number of agreements in the first \eqn{i,j} elements of the lists.}
 \item{hypermat.by}{An optional output of the B-Y corrected p-values of \code{hypermat} }
 }
@@ -51,15 +49,12 @@ Plaisier, Seema B., Richard Taschereau, Justin A. Wong, and Thomas G. Graeber. "
 Benjamini, Y., and D. Yekutieli. 2001. "The Control of the False Discovery Rate in Multiple Testing Under Dependency." ANNALS OF STATISTICS 29 (4): 1165-1188.
 }
 \author{
-	Jason Stein and Jonathan Rosenblatt
+	Jonathan Rosenblatt and Jason Stein
 }
 
-\note{
+\section{Warning }{
 Unlike the reference, we output the pvalues in natural log scale and not in log 10 scale. 
-
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{\code{\link{pvalRRHO}}}
 
