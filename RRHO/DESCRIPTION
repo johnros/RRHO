@@ -1,7 +1,7 @@
 Package: RRHO
 Type: Package
 Title: Inference on agreement between two lists
-Version: 0.99
+Version: 0.99.0
 Date: 2013-06-21
 Author: Jonathan Rosenblatt and Jason Stein 
 Maintainer: Jonathan Rosenblatt <john.ros.work@gmail.com>
@@ -9,3 +9,4 @@ Description: The package is aimed at inference on the amount of agreement in two
 Collate:'ExpressionAnalysis.R'
 License:GPL-2
 Depends: VennDiagram, grid
+biocViews: Genetics,  SequenceMatching

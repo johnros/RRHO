@@ -7,7 +7,8 @@ OHBM2013Analysis.R
 RRHO.Rproj
 .RData
 RRHO.Rcheck
-RRHO_0.3.tar.gz
-.Rhistory (johnros-laptop's conflicted copy 2013-06-24)
+*.tar.gz
+.Rhistory
 RRHO-RForge
 Rplots.pdf
+*.log

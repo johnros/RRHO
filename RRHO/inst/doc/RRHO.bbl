@@ -1,0 +1,30 @@
+\begin{thebibliography}{3}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Benjamini and Yekutieli(2001)]{benjamini_control_2001}
+Y.~Benjamini and D.~Yekutieli.
+\newblock The control of the false discovery rate in multiple testing under
+  dependency.
+\newblock \emph{{ANNALS} {OF} {STATISTICS}}, 29\penalty0 (4):\penalty0
+  1165--1188, 2001.
+
+\bibitem[Plaisier et~al.(2010)Plaisier, Taschereau, Wong, and
+  Graeber]{plaisier_rankrank_2010}
+Seema~B. Plaisier, Richard Taschereau, Justin~A. Wong, and Thomas~G. Graeber.
+\newblock Rank–rank hypergeometric overlap: identification of statistically
+  significant overlap between gene-expression signatures.
+\newblock \emph{Nucleic Acids Research}, 38\penalty0 (17):\penalty0 e169--e169,
+  September 2010.
+\newblock ISSN 0305-1048, 1362-4962.
+
+\bibitem[Rosenblatt(2013)]{rosenblatt_practitioners_2013}
+Jonathan Rosenblatt.
+\newblock A practitioner's guide to multiple testing error rates.
+\newblock {arXiv} e-print 1304.4920, April 2013.
+\newblock URL \url{http://arxiv.org/abs/1304.4920}.
+
+\end{thebibliography}
