@@ -61,12 +61,15 @@ RRHO <- function(list1, list2,
 		 BY=FALSE) {
     ## list 1 is a data.frame from experiment 1 with two columns, 
     ## column 1 is the Gene Identifier, 
-    ## column 2 is the signed ranking value (e.g. signed -log10(p-value) or fold change)
+    ## column 2 is the signed ranking value (e.g. signed -log(p-value) 
+    ##        or fold change)
     ##
     ## list 2 is a data.frame from experiment 2 with two columns, 
     ## column 1 is the Gene Identifier, 
-    ## column 2 is the signed ranking value (e.g. signed -log10(p-value) or fold change)
-    ## stepsize indicates how many genes to increase by in each algorithm iteration
+    ## column 2 is the signed ranking value (e.g. signed -log10(p-value) 
+    ##    or fold change)
+    ## stepsize indicates how many genes to increase by 
+    ##    in each algorithm iteration
   
   if (length(list1[,1]) != length(unique(list1[,1])))
 		stop('Non-unique gene identifier found in list1');
@@ -131,7 +134,8 @@ RRHO <- function(list1, list2,
 				      c("#00007F", "blue", "#007FFF", "cyan", 
 					"#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"));
         layout(matrix(c(rep(1,5),2), 1, 6, byrow = TRUE));
-        image(hypermat,xlab='',ylab='',col=jet.colors(100),axes=FALSE,main="Rank Rank Hypergeometric Overlap Map");
+        image(hypermat,xlab='', ylab='', col=jet.colors(100), 
+              axes=FALSE, main="Rank Rank Hypergeometric Overlap Map");
         mtext(labels[2],2,0.5);
         mtext(labels[1],1,0.5);
         ##mtext(paste("-log(BY P-value) =",max(hypermat.by)),3,0.5,cex=0.5);
@@ -145,32 +149,54 @@ RRHO <- function(list1, list2,
         list1ind  <- 1:nlist1;
         corval  <- cor(list1ind,list2ind,method="spearman");
 	.filename <-paste("RankScatter",labels[1],"_VS_",labels[2],".jpg",sep="") 
-        jpeg(paste(outputdir,.filename,sep="/"),width=8,height=8,units="in",quality=100,res=150);
-        plot(list1ind,list2ind,xlab=paste(labels[1],"(Rank)"),ylab=paste(labels[2],"(Rank)"),pch=20,main=paste("Rank-Rank Scatter (rho = ",signif(corval,digits=3),")",sep=""),cex=0.5);
-	# TODO: Replace linear fit with LOESS
+        jpeg(paste(outputdir,.filename,sep="/"), width=8, 
+             height=8, units="in", quality=100, res=150);
+        plot(list1ind,list2ind,xlab=paste(labels[1],"(Rank)"), 
+             ylab=paste(labels[2],"(Rank)"), pch=20, 
+             main=paste(
+               "Rank-Rank Scatter (rho = ",signif(corval,digits=3),")"
+               ,sep=""), cex=0.5);
+	## TODO: Replace linear fit with LOESS
         model  <- lm(list2ind~list1ind);
         lines(predict(model),col="red",lwd=3);
         dev.off();
         
         ## Make a Venn Diagram for the most significantly associated points
         ## Upper Right Corner (Downregulated in both)
-        maxind.ur  <- which(max(hypermat[ceiling(nrow(hypermat)/2):nrow(hypermat),ceiling(ncol(hypermat)/2):ncol(hypermat)],na.rm=TRUE) == hypermat,arr.ind=TRUE);
+        maxind.ur  <- which(
+          max(hypermat[ceiling(nrow(hypermat)/2):nrow(hypermat),
+                       ceiling(ncol(hypermat)/2):ncol(hypermat)],
+              na.rm=TRUE) == hypermat, 
+          arr.ind=TRUE);
         indlist1.ur  <- seq(1,nlist1,stepsize)[maxind.ur[1]];
         indlist2.ur  <- seq(1,nlist2,stepsize)[maxind.ur[2]];
-        genelist.ur  <- intersect(list1[indlist1.ur:nlist1,1],list2[indlist2.ur:nlist2,1]);
+        genelist.ur  <- intersect(
+          list1[indlist1.ur:nlist1,1],
+          list2[indlist2.ur:nlist2,1]);
         ## Lower Right corner (Upregulated in both)
-        maxind.lr  <- which(max(hypermat[1:(ceiling(nrow(hypermat)/2)-1),1:(ceiling(ncol(hypermat)/2)-1)],na.rm=TRUE) == hypermat,arr.ind=TRUE);
+        maxind.lr  <- which(
+          max(hypermat[1:(ceiling(nrow(hypermat)/2)-1), 
+                       1:(ceiling(ncol(hypermat)/2)-1)],
+              na.rm=TRUE) == hypermat, arr.ind=TRUE);
         indlist1.lr  <- seq(1,nlist1,stepsize)[maxind.lr[1]];
         indlist2.lr  <- seq(1,nlist2,stepsize)[maxind.lr[2]];
-        genelist.lr  <- intersect(list1[1:indlist1.lr,1],list2[1:indlist2.lr,1]);
+        genelist.lr  <- intersect(
+          list1[1:indlist1.lr,1], 
+          list2[1:indlist2.lr,1]);
         
         ## Write out the gene lists of overlapping
-	.filename <- paste(outputdir,"/RRHO_GO_MostDownregulated",labels[1],"_VS_",labels[2],".csv",sep="")
+	.filename <- paste(
+    outputdir,"/RRHO_GO_MostDownregulated",labels[1],"_VS_",labels[2],".csv",
+    sep="")
         write.table(genelist.ur,.filename,row.names=F,quote=F,col.names=F);
-	.filename <- paste(outputdir,"/RRHO_GO_MostUpregulated",labels[1],"_VS_",labels[2],".csv",sep="")
+	.filename <- paste(
+    outputdir,"/RRHO_GO_MostUpregulated",labels[1],"_VS_",labels[2],".csv",
+    sep="")
         write.table(genelist.lr,.filename,row.names=F,quote=F,col.names=F);
         
-	.filename <- paste(outputdir,"/RRHO_VennMost",labels[1],"__VS__",labels[2],".jpg",sep="")
+	.filename <- paste(
+    outputdir,"/RRHO_VennMost",labels[1],"__VS__",labels[2],".jpg", 
+    sep="")
 	jpeg(.filename,width=8.5,height=5,units="in",quality=100,res=150);
         vp1  <- viewport(x=0.25,y=0.5,width=0.5,height=0.9);
         vp2  <- viewport(x=0.75,y=0.5,width=0.5,height=0.9);
@@ -243,7 +269,8 @@ pvalRRHO <- function(RRHO.obj, replications,
   }
   
 	n.items <- RRHO.obj$n.items
-	result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize , replications= replications, call=match.call())
+	result <- list(FUN=FUN, n.items=n.items, stepsize=stepsize , 
+                 replications= replications, call=match.call())
 
 	list.names <- paste('Gene',1:n.items, sep='')
 	FUN.vals<- rep(NA, replications)
