@@ -9,4 +9,4 @@ Description: The package is aimed at inference on the amount of agreement in two
 Collate:'ExpressionAnalysis.R'
 License:GPL-2
 Depends: VennDiagram, grid
-biocViews: Genetics,  SequenceMatching
+biocViews: Genetics,  SequenceMatching, Microarray, Transcription
