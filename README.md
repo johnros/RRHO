@@ -2,6 +2,9 @@ RRHO
 ====
 
 Implementing the Rank-Rank Hypergeometric overlap test.
+This version is obsolete. 
+An updated one is available at:
+http://www.bioconductor.org/packages/release/bioc/html/RRHO.html
 
 
 Installation
